@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toList;
 
 public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
@@ -40,12 +41,12 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
         final List<String> finalOrdersSummary = new ArrayList<>();
 
         orders.stream()
-                .collect(groupingBy(Order::type, TreeMap::new, Collectors.toList()))
-                .forEach((key, value) -> {
-                    if (value != null) {
-                        final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(value);
+                .collect(groupingBy(Order::type, TreeMap::new, toList()))
+                .forEach((type, ordersByType) -> {
+                    if (ordersByType != null) {
+                        final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(ordersByType);
                         finalOrdersSummary.addAll(ordersByPrice.values().stream()
-                                .sorted(comparatorForOrderType(key))
+                                .sorted(comparatorForOrderType(type))
                                 .map(Order::summary)
                                 .collect(toList()));
                     }
@@ -57,14 +58,14 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
 
     private Map<BigDecimal, Order> groupOrdersByPrice(List<Order> ordersByType) {
         return ordersByType.stream()
-                .collect(groupingBy(Order::price, Collectors.reducing(
+                .collect(groupingBy(Order::price, reducing(
                         new Order(),
                         identity(),
                         (left, right) -> new Order(right.userId(), left.quantity() + right.quantity(), right.price(), right.type()))));
     }
 
     private Comparator<Order> comparatorForOrderType(OrderType type) {
-        final Comparator<Order> comparator = Comparator.comparing(Order::price);
+        final Comparator<Order> comparator = comparing(Order::price);
         return type.equals(OrderType.BUY) ? comparator.reversed() : comparator;
     }
 }

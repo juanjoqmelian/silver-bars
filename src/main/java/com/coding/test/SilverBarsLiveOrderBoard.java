@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.groupingBy;
@@ -37,16 +37,15 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
 
     @Override
     public SummaryInfo summary() {
-        Map<OrderType, List<Order>> ordersByType = orders.stream()
-                .collect(groupingBy(Order::type));
-
         final List<String> finalOrdersSummary = new ArrayList<>();
-        Stream.of(OrderType.values())
-                .forEach(type -> {
-                    if (ordersByType.get(type) != null) {
-                        final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(ordersByType, type);
+
+        orders.stream()
+                .collect(groupingBy(Order::type, TreeMap::new, Collectors.toList()))
+                .forEach((key, value) -> {
+                    if (value != null) {
+                        final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(value);
                         finalOrdersSummary.addAll(ordersByPrice.values().stream()
-                                .sorted(comparatorForOrderType(type))
+                                .sorted(comparatorForOrderType(key))
                                 .map(Order::summary)
                                 .collect(toList()));
                     }
@@ -56,8 +55,8 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
     }
 
 
-    private Map<BigDecimal, Order> groupOrdersByPrice(Map<OrderType, List<Order>> ordersByType, OrderType type) {
-        return ordersByType.get(type).stream()
+    private Map<BigDecimal, Order> groupOrdersByPrice(List<Order> ordersByType) {
+        return ordersByType.stream()
                 .collect(groupingBy(Order::price, Collectors.reducing(
                         new Order(),
                         identity(),

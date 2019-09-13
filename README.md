@@ -25,6 +25,6 @@ Just run JUnit 5 tests using Gradle wrapper:
 1. Run `./gradlew clean build`
 1. Import jar located in `build/libs/silver-bars-1.0-SNAPSHOT-all.jar` to your project's dependencies.
 
-Alternatively we could've published the dependency to a artefact repository.
+Alternatively we could've published the dependency to an artefact repository.
 
 

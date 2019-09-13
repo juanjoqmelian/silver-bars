@@ -43,13 +43,11 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
         orders.stream()
                 .collect(groupingBy(Order::type, TreeMap::new, toList()))
                 .forEach((type, ordersByType) -> {
-                    if (ordersByType != null) {
-                        final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(ordersByType);
-                        finalOrdersSummary.addAll(ordersByPrice.values().stream()
-                                .sorted(comparatorForOrderType(type))
-                                .map(Order::summary)
-                                .collect(toList()));
-                    }
+                    final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(ordersByType);
+                    finalOrdersSummary.addAll(ordersByPrice.values().stream()
+                            .sorted(comparatorForOrderType(type))
+                            .map(Order::summary)
+                            .collect(toList()));
                 });
 
         return SummaryInfo.fromOrderSummaries(finalOrdersSummary);

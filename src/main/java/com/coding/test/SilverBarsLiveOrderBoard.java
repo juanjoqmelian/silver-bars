@@ -65,6 +65,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
     }
 
     private Comparator<Order> comparatorForOrderType(OrderType type) {
-        return type.equals(OrderType.BUY) ? Comparator.comparing(Order::price).reversed() : Comparator.comparing(Order::price);
+        final Comparator<Order> comparator = Comparator.comparing(Order::price);
+        return type.equals(OrderType.BUY) ? comparator.reversed() : comparator;
     }
 }

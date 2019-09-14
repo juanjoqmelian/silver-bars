@@ -3,6 +3,7 @@ package com.coding.test;
 import com.google.common.base.Strings;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Order {
@@ -18,7 +19,7 @@ public class Order {
     public Order(String userId, Double quantity, BigDecimal price, OrderType type) {
         this.userId = userId;
         this.quantity = quantity;
-        this.price = price;
+        this.price = price != null ? price.setScale(2, RoundingMode.HALF_UP) : price;
         this.type = type;
     }
 

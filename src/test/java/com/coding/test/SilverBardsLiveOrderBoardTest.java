@@ -28,7 +28,7 @@ class SilverBardsLiveOrderBoardTest {
 
         liveOrderBoard.register(newOrder);
 
-        assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo("SELL: 3.5 kg for £10.5"));
+        assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo("SELL: 3.5 kg for £10.50"));
     }
 
     @Test
@@ -100,8 +100,8 @@ class SilverBardsLiveOrderBoardTest {
         liveOrderBoard.register(order2);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
-                "SELL: 3.5 kg for £89.0",
-                "SELL: 2.5 kg for £120.5"
+                "SELL: 3.5 kg for £89.00",
+                "SELL: 2.5 kg for £120.50"
         ));
     }
 
@@ -131,9 +131,9 @@ class SilverBardsLiveOrderBoardTest {
         liveOrderBoard.register(order3);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
-                "SELL: 4.6 kg for £77.2",
-                "SELL: 9.2 kg for £102.2",
-                "SELL: 1.5 kg for £110.5"
+                "SELL: 4.6 kg for £77.20",
+                "SELL: 9.2 kg for £102.20",
+                "SELL: 1.5 kg for £110.50"
         ));
     }
 
@@ -163,9 +163,9 @@ class SilverBardsLiveOrderBoardTest {
         liveOrderBoard.register(order3);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
-                "BUY: 1.5 kg for £110.5",
-                "BUY: 9.2 kg for £102.2",
-                "BUY: 4.6 kg for £77.2"
+                "BUY: 1.5 kg for £110.50",
+                "BUY: 9.2 kg for £102.20",
+                "BUY: 4.6 kg for £77.20"
         ));
     }
 
@@ -203,9 +203,9 @@ class SilverBardsLiveOrderBoardTest {
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
                 "BUY: 7.2 kg for £120.50",
-                "BUY: 4.6 kg for £77.2",
-                "SELL: 1.8 kg for £101.3",
-                "SELL: 2.5 kg for £120.5"
+                "BUY: 4.6 kg for £77.20",
+                "SELL: 1.8 kg for £101.30",
+                "SELL: 2.5 kg for £120.50"
         ));
     }
 
@@ -214,49 +214,49 @@ class SilverBardsLiveOrderBoardTest {
         final Order order1 = new Order(
                 "my-userId",
                 2.5,
-                new BigDecimal("120.5"),
+                new BigDecimal("120.50"),
                 OrderType.SELL
         );
         final Order order2 = new Order(
                 "my-userId",
                 4.6,
-                new BigDecimal("77.2"),
+                new BigDecimal("77.20"),
                 OrderType.SELL
         );
         final Order order3 = new Order(
                 "my-userId",
                 7.2,
-                new BigDecimal("120.5"),
+                new BigDecimal("120.50"),
                 OrderType.SELL
         );
         final Order order4 = new Order(
                 "my-userId",
                 1.8,
-                new BigDecimal("101.3"),
+                new BigDecimal("101.30"),
                 OrderType.SELL
         );
         final Order order5 = new Order(
                 "my-userId",
                 2.5,
-                new BigDecimal("120.5"),
+                new BigDecimal("120.50"),
                 OrderType.BUY
         );
         final Order order6 = new Order(
                 "my-userId",
                 4.6,
-                new BigDecimal("77.2"),
+                new BigDecimal("77.20"),
                 OrderType.BUY
         );
         final Order order7 = new Order(
                 "my-userId",
                 7.2,
-                new BigDecimal("120.5"),
+                new BigDecimal("120.50"),
                 OrderType.BUY
         );
         final Order order8 = new Order(
                 "my-userId",
                 1.8,
-                new BigDecimal("101.3"),
+                new BigDecimal("101.30"),
                 OrderType.BUY
         );
 
@@ -270,12 +270,37 @@ class SilverBardsLiveOrderBoardTest {
         liveOrderBoard.register(order8);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
-                "BUY: 9.7 kg for £120.5",
-                "BUY: 1.8 kg for £101.3",
-                "BUY: 4.6 kg for £77.2",
-                "SELL: 4.6 kg for £77.2",
-                "SELL: 1.8 kg for £101.3",
-                "SELL: 9.7 kg for £120.5"
+                "BUY: 9.7 kg for £120.50",
+                "BUY: 1.8 kg for £101.30",
+                "BUY: 4.6 kg for £77.20",
+                "SELL: 4.6 kg for £77.20",
+                "SELL: 1.8 kg for £101.30",
+                "SELL: 9.7 kg for £120.50"
+        ));
+    }
+
+    @Test
+    void shouldGroupSamePricesWithDifferentTrailingZeros() {
+
+        final Order order1 = new Order(
+              "my-user-id",
+              8.5,
+              new BigDecimal("120.5"),
+                OrderType.SELL
+        );
+
+        final Order order2 = new Order(
+                "my-user-id",
+                12.5,
+                new BigDecimal("120.50"),
+                OrderType.SELL
+        );
+
+        liveOrderBoard.register(order1);
+        liveOrderBoard.register(order2);
+
+        assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
+                "SELL: 21.0 kg for £120.50"
         ));
     }
 }

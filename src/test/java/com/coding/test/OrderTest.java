@@ -17,7 +17,7 @@ public class OrderTest {
                 OrderType.BUY
         );
 
-        assertThat(order.summary()).isEqualTo("BUY: 5.5 kg for £300");
+        assertThat(order.summary()).isEqualTo("BUY: 5.5 kg for £300.00");
     }
 
     @Test

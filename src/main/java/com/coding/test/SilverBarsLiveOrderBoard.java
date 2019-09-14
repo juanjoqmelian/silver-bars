@@ -5,12 +5,14 @@ import com.google.common.base.Strings;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
@@ -38,17 +40,19 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
 
     @Override
     public SummaryInfo summary() {
-        final List<String> finalOrdersSummary = new ArrayList<>();
-
-        orders.stream()
+        final List<String> finalOrdersSummary = orders.stream()
                 .collect(groupingBy(Order::type, TreeMap::new, toList()))
-                .forEach((type, ordersByType) -> {
-                    final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(ordersByType);
-                    finalOrdersSummary.addAll(ordersByPrice.values().stream()
-                            .sorted(comparatorForOrderType(type))
+                .entrySet()
+                .stream()
+                .map((entry) -> {
+                    final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(entry.getValue());
+                    return ordersByPrice.values().stream()
+                            .sorted(comparatorForOrderType(entry.getKey()))
                             .map(Order::summary)
-                            .collect(toList()));
-                });
+                            .collect(toList());
+                })
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
 
         return SummaryInfo.fromOrderSummaries(finalOrdersSummary);
     }

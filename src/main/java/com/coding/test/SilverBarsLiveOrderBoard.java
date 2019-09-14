@@ -35,18 +35,18 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
 
     @Override
     public SummaryInfo summary() {
-        final List<String> finalOrdersSummary = groupOrdersByType()
-                .map((entry) -> {
-                    final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(entry.getValue());
-                    return ordersByPrice.values().stream()
-                            .sorted(comparatorForOrderType(entry.getKey()))
-                            .map(Order::summary)
-                            .collect(toList());
-                })
-                .flatMap(Collection::stream)
-                .collect(toList());
-
-        return SummaryInfo.fromOrderSummaries(finalOrdersSummary);
+        return SummaryInfo.fromOrderSummaries(
+                groupOrdersByType()
+                        .map((entry) -> {
+                            final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(entry.getValue());
+                            return ordersByPrice.values().stream()
+                                    .sorted(comparatorForOrderType(entry.getKey()))
+                                    .map(Order::summary)
+                                    .collect(toList());
+                        })
+                        .flatMap(Collection::stream)
+                        .collect(toList())
+        );
     }
 
 

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
@@ -34,10 +35,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
 
     @Override
     public SummaryInfo summary() {
-        final List<String> finalOrdersSummary = orders.stream()
-                .collect(groupingBy(Order::type, TreeMap::new, toList()))
-                .entrySet()
-                .stream()
+        final List<String> finalOrdersSummary = groupOrderByType()
                 .map((entry) -> {
                     final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(entry.getValue());
                     return ordersByPrice.values().stream()
@@ -51,6 +49,13 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
         return SummaryInfo.fromOrderSummaries(finalOrdersSummary);
     }
 
+
+    private Stream<Map.Entry<OrderType, List<Order>>> groupOrderByType() {
+        return orders.stream()
+                .collect(groupingBy(Order::type, TreeMap::new, toList()))
+                .entrySet()
+                .stream();
+    }
 
     private Map<BigDecimal, Order> groupOrdersByPrice(List<Order> ordersByType) {
         return ordersByType.stream()

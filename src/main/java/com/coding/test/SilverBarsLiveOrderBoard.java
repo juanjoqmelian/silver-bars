@@ -35,7 +35,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
 
     @Override
     public SummaryInfo summary() {
-        final List<String> finalOrdersSummary = groupOrderByType()
+        final List<String> finalOrdersSummary = groupOrdersByType()
                 .map((entry) -> {
                     final Map<BigDecimal, Order> ordersByPrice = groupOrdersByPrice(entry.getValue());
                     return ordersByPrice.values().stream()
@@ -50,7 +50,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
     }
 
 
-    private Stream<Map.Entry<OrderType, List<Order>>> groupOrderByType() {
+    private Stream<Map.Entry<OrderType, List<Order>>> groupOrdersByType() {
         return orders.stream()
                 .collect(groupingBy(Order::type, TreeMap::new, toList()))
                 .entrySet()

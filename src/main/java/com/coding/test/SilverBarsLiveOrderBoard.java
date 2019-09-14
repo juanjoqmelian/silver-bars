@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
@@ -47,7 +46,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
                             .collect(toList());
                 })
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return SummaryInfo.fromOrderSummaries(finalOrdersSummary);
     }
@@ -62,7 +61,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
     }
 
     private Comparator<Order> comparatorForOrderType(OrderType type) {
-        final Comparator<Order> comparator = comparing(Order::price);
-        return type.equals(OrderType.BUY) ? comparator.reversed() : comparator;
+        final Comparator<Order> comparatorByPrice = comparing(Order::price);
+        return type.equals(OrderType.BUY) ? comparatorByPrice.reversed() : comparatorByPrice;
     }
 }

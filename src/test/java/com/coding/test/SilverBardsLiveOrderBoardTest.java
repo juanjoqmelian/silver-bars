@@ -58,10 +58,40 @@ class SilverBardsLiveOrderBoardTest {
                 OrderType.SELL
         );
 
-        liveOrderBoard.register(newOrder);
-        liveOrderBoard.cancel(newOrder);
+        final Order createdOrder = liveOrderBoard.register(newOrder);
+        liveOrderBoard.cancel(createdOrder);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo());
+    }
+
+    @Test
+    void shouldBeAbleToAddTwoIdenticalOrdersAndRemoveOnlyOneOfThem() {
+
+        final Order order1 = new Order(
+                "my-userId",
+                3.5,
+                new BigDecimal("10.5"),
+                OrderType.SELL
+        );
+        final Order order2 = new Order(
+                "my-userId",
+                3.5,
+                new BigDecimal("10.5"),
+                OrderType.SELL
+        );
+
+        liveOrderBoard.register(order1);
+        final Order createdOrder2 = liveOrderBoard.register(order2);
+
+        assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
+                "SELL: 7.0 kg for £10.50"
+        ));
+
+        liveOrderBoard.cancel(createdOrder2);
+
+        assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
+                "SELL: 3.5 kg for £10.50"
+        ));
     }
 
     @Test

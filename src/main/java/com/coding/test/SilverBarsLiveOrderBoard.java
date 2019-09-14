@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
@@ -22,9 +23,17 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
     private final Set<Order> orders = new HashSet<>();
 
     @Override
-    public void register(Order order) {
+    public Order register(Order order) {
         Preconditions.checkArgument(order.isValid(), "Order is not valid!");
-        orders.add(order);
+        final Order newOrder = new Order(
+                UUID.randomUUID().toString(),
+                order.userId(),
+                order.quantity(),
+                order.price(),
+                order.type()
+        );
+        orders.add(newOrder);
+        return newOrder;
     }
 
     @Override

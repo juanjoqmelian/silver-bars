@@ -1,5 +1,7 @@
 package com.coding.test;
 
+import com.google.common.base.Strings;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -64,5 +66,12 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(userId, quantity, price, type);
+    }
+
+    boolean isValid() {
+        return !Strings.isNullOrEmpty(userId)
+                && quantity != null && quantity > 0
+                && price != null && price.compareTo(BigDecimal.ZERO) > 0
+                && type != null;
     }
 }

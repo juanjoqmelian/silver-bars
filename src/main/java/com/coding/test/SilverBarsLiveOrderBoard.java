@@ -1,10 +1,8 @@
 package com.coding.test;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -25,10 +23,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
 
     @Override
     public void register(Order order) {
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(order.userId()), "User id cannot be null or empty!");
-        Preconditions.checkArgument(order.quantity() > 0, "Quantity has to be greater than zero!");
-        Preconditions.checkArgument(order.price().compareTo(BigDecimal.ZERO) > 0, "Price has to be greater than zero!");
-        Preconditions.checkArgument(order.type() != null, "Type cannot be null!");
+        Preconditions.checkArgument(order.isValid(), "Order is not valid!");
         orders.add(order);
     }
 

@@ -32,7 +32,7 @@ class SilverBardsLiveOrderBoardTest {
     }
 
     @Test
-    void shouldNotAllowAnOrderWithNoUserId() {
+    void shouldNotAllowAnInvalidOrder() {
 
         final Order newOrder = new Order(
                 null,
@@ -45,109 +45,7 @@ class SilverBardsLiveOrderBoardTest {
             liveOrderBoard.register(newOrder);
         });
 
-        assertThat(illegalArgumentException.getMessage()).isEqualTo("User id cannot be null or empty!");
-    }
-
-    @Test
-    void shouldNotAllowAnOrderWithEmptyUserId() {
-
-        final Order newOrder = new Order(
-                "",
-                2.5,
-                new BigDecimal("10.5"),
-                OrderType.SELL
-        );
-
-        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            liveOrderBoard.register(newOrder);
-        });
-
-        assertThat(illegalArgumentException.getMessage()).isEqualTo("User id cannot be null or empty!");
-    }
-
-    @Test
-    void shouldNotAllowAnOrderWithZeroQuantity() {
-
-        final Order newOrder = new Order(
-                "my-userId",
-                0.0,
-                new BigDecimal("10.5"),
-                OrderType.SELL
-        );
-
-        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            liveOrderBoard.register(newOrder);
-        });
-
-        assertThat(illegalArgumentException.getMessage()).isEqualTo("Quantity has to be greater than zero!");
-    }
-
-    @Test
-    void shouldNotAllowAnOrderWithNegativeQuantity() {
-
-        final Order newOrder = new Order(
-                "my-userId",
-                -1.0,
-                new BigDecimal("10.5"),
-                OrderType.SELL
-        );
-
-        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            liveOrderBoard.register(newOrder);
-        });
-
-        assertThat(illegalArgumentException.getMessage()).isEqualTo("Quantity has to be greater than zero!");
-    }
-
-    @Test
-    void shouldNotAllowAnOrderWithPriceZero() {
-
-        final Order newOrder = new Order(
-                "my-userId",
-                2.5,
-                new BigDecimal("0.0"),
-                OrderType.SELL
-        );
-
-        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            liveOrderBoard.register(newOrder);
-        });
-
-        assertThat(illegalArgumentException.getMessage()).isEqualTo("Price has to be greater than zero!");
-    }
-
-    @Test
-    void shouldNotAllowAnOrderWithNegativePrice() {
-
-        final Order newOrder = new Order(
-                "my-userId",
-                2.5,
-                new BigDecimal("-2.5"),
-                OrderType.SELL
-        );
-
-        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            liveOrderBoard.register(newOrder);
-        });
-
-        assertThat(illegalArgumentException.getMessage()).isEqualTo("Price has to be greater than zero!");
-    }
-
-    @Test
-    void shouldNotAllowAnOrderWithNoType() {
-
-        final Order newOrder = new Order(
-                "my-userId",
-                2.5,
-                new BigDecimal("2.5"),
-                null
-        );
-
-        final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            liveOrderBoard.register(newOrder);
-        });
-
-        assertThat(illegalArgumentException.getMessage()).isEqualTo("Type cannot be null!");
+        assertThat(illegalArgumentException.getMessage()).isEqualTo("Order is not valid!");
     }
 
     @Test

@@ -1,9 +1,9 @@
 package com.coding.test;
 
 public interface LiveOrderBoard {
-    Order register(Order order);
+    String register(Order order);
 
-    void cancel(Order order);
+    void cancel(String id);
 
     SummaryInfo summary();
 }

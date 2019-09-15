@@ -58,8 +58,8 @@ class SilverBardsLiveOrderBoardTest {
                 OrderType.SELL
         );
 
-        final Order createdOrder = liveOrderBoard.register(newOrder);
-        liveOrderBoard.cancel(createdOrder);
+        final String createdOrderId = liveOrderBoard.register(newOrder);
+        liveOrderBoard.cancel(createdOrderId);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo());
     }
@@ -81,13 +81,13 @@ class SilverBardsLiveOrderBoardTest {
         );
 
         liveOrderBoard.register(order1);
-        final Order createdOrder2 = liveOrderBoard.register(order2);
+        final String createdOrderId = liveOrderBoard.register(order2);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
                 "SELL: 7.0 kg for £10.50"
         ));
 
-        liveOrderBoard.cancel(createdOrder2);
+        liveOrderBoard.cancel(createdOrderId);
 
         assertThat(liveOrderBoard.summary()).isEqualTo(new SummaryInfo(
                 "SELL: 3.5 kg for £10.50"
@@ -97,15 +97,8 @@ class SilverBardsLiveOrderBoardTest {
     @Test
     void shouldRaiseExceptionWhenCancellingNotExistingOrder() {
 
-        final Order newOrder = new Order(
-                "my-userId",
-                3.5,
-                new BigDecimal("10.5"),
-                OrderType.SELL
-        );
-
         final IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            liveOrderBoard.cancel(newOrder);
+            liveOrderBoard.cancel("nonExistingId");
         });
 
         assertThat(illegalArgumentException.getMessage()).isEqualTo("Specified order does not exist!");
@@ -313,9 +306,9 @@ class SilverBardsLiveOrderBoardTest {
     void shouldGroupSamePricesWithDifferentTrailingZeros() {
 
         final Order order1 = new Order(
-              "my-user-id",
-              8.5,
-              new BigDecimal("120.5"),
+                "my-user-id",
+                8.5,
+                new BigDecimal("120.5"),
                 OrderType.SELL
         );
 

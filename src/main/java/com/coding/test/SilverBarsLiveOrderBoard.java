@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
     private final Set<Order> orders = new HashSet<>();
 
     @Override
-    public Order register(Order order) {
+    public String register(Order order) {
         Preconditions.checkArgument(order.isValid(), "Order is not valid!");
         final Order newOrder = new Order(
                 UUID.randomUUID().toString(),
@@ -33,13 +34,16 @@ public class SilverBarsLiveOrderBoard implements LiveOrderBoard {
                 order.type()
         );
         orders.add(newOrder);
-        return newOrder;
+        return newOrder.id();
     }
 
     @Override
-    public void cancel(Order order) {
-        Preconditions.checkArgument(orders.contains(order), "Specified order does not exist!");
-        orders.remove(order);
+    public void cancel(String id) {
+        final Optional<Order> orderToCancel = orders.stream()
+                .filter(order -> order.id().equals(id))
+                .findFirst();
+        Preconditions.checkArgument(orderToCancel.isPresent(), "Specified order does not exist!");
+        orders.remove(orderToCancel.get());
     }
 
     @Override
